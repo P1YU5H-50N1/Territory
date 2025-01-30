@@ -14,7 +14,8 @@ dependencies = [
     "tornado (>=6.4.2,<7.0.0)",
     "zmq (>=0.0.0,<0.0.1)",
     "py-vollib-vectorized (>=0.1.1,<0.2.0)",
-    "perspective-python (>=3.3.1,<4.0.0)"
+    "perspective-python (>=3.3.1,<4.0.0)",
+    "pyarrow (>=19.0.0,<20.0.0)"
 ]
 
 

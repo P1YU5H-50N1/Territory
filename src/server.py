@@ -1,4 +1,6 @@
-from perspective import Table, PerspectiveManager, PerspectiveTornadoHandler
+from perspective import Table, Server,table
+from perspective.handlers.tornado import PerspectiveTornadoHandler
+import perspective
 import pandas as pd
 import tornado 
 import logging
@@ -56,9 +58,12 @@ def start_listening_bcast(option_quotes_tbl, underlying_prices_tbl,option_price_
                     lambda opt: calculate_iv(opt['ask'], uly_price, opt['strike'], tte, 0.08, opt['option_type'][0].lower(),opt.name) 
                 ,axis=1) 
 
-                chain_rec_update = option_price_iv.loc[chain_w_bid_ask].to_records('dict')
-
-                option_quotes_tbl.update(chain_rec_update)
+                if option_price_iv.loc[chain_w_bid_ask].shape[0] != 0 :
+                    x = option_price_iv.loc[chain_w_bid_ask]
+                    x['maturity'] = x['maturity'].astype(str)
+                    chain_rec_update = list(x.to_dict('records'))
+                    print(chain_rec_update[0],type(chain_rec_update[0]))
+                    option_quotes_tbl.update(chain_rec_update)
 
                 # with pd.option_context('display.max_rows', None, 'display.max_columns', None,'display.max_colwidth',None):  
                     # print(f"updated_moneyness {symbol} {uly_price}\n",option_price_iv.loc[chain_w_bid_ask][['name_fut','strike','moneyness','biv','aiv']]) 
@@ -91,8 +96,11 @@ def start_listening_bcast(option_quotes_tbl, underlying_prices_tbl,option_price_
             option_price_iv.loc[symbol, 'bid'] = opt_bid
             option_price_iv.loc[symbol, 'ask'] = opt_ask
 
-            chain_rec_update = option_price_iv.loc[symbol]
-            option_quotes_tbl.update(chain_rec_update)
+            if option_price_iv.loc[symbol].shape[0] == 0:
+                x = option_price_iv.loc[symbol]
+                x['maturity'] = x['maturity'].astype(str)
+                chain_rec_update = x.to_dict('records')
+                option_quotes_tbl.update(chain_rec_update)
 
 class MainHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
@@ -116,15 +124,17 @@ option_price_iv, underlying_prices_df = get_placeholder()
 underlying_prices_df = underlying_prices_df[~underlying_prices_df.index.duplicated(keep='first')]
 
 
-MANAGER = PerspectiveManager()
-option_quotes = Table(option_price_iv,index="name")
-underlying_ltp = Table(underlying_prices_df,index='name_fut')
+MANAGER = Server()
+# option_quotes = table(option_price_iv,index="name")
+# option_quotes = perspective.table(option_price_iv,index="name")
+# underlying_ltp = table(underlying_prices_df,index='name_fut')
 
-MANAGER.host_table("option_quotes", option_quotes)
-MANAGER.host_table("underlying_ltp", underlying_ltp)
+client = MANAGER.new_local_client()
+option_quotes = client.table(option_price_iv,index='name',name="option_quotes")
+underlying_ltp = client.table(underlying_prices_df,index='name_fut',name="underlying_ltp")
 
 app = tornado.web.Application([
-    (r"/websocket", PerspectiveTornadoHandler, {"manager": MANAGER, "check_origin": True}),
+    (r"/websocket", PerspectiveTornadoHandler, {"perspective_server": MANAGER, "check_origin": True}),
     (r"/",MainHandler),
 ])
 
@@ -132,7 +142,7 @@ thread = Thread(target=start_listening_bcast,args=[option_quotes,underlying_ltp,
 thread.start()
 
 
-app.listen(33002)
+app.listen(28004)
 logging.critical("Listening on http://localhost:33002")
 loop = tornado.ioloop.IOLoop.current()
 loop.start()
