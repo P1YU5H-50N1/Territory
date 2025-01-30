@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+        type="module"
+        src="https://cdn.jsdelivr.net/npm/@finos/perspective/dist/cdn/perspective.js"
+    ></script>
+    <script
+        type="module"
+        src="https://cdn.jsdelivr.net/npm/@finos/perspective-viewer/dist/cdn/perspective-viewer.js"
+    ></script>
+    <script
+        type="module"
+        src="https://cdn.jsdelivr.net/npm/@finos/perspective-viewer-datagrid/dist/cdn/perspective-viewer-datagrid.js"
+    ></script>
+    <script
+        type="module"
+        src="https://cdn.jsdelivr.net/npm/@finos/perspective-viewer-d3fc/dist/cdn/perspective-viewer-d3fc.js"
+    ></script>
+
+    <link
+        rel="stylesheet"
+        crossorigin="anonymous"
+        href="https://cdn.jsdelivr.net/npm/@finos/perspective-viewer/dist/css/pro.css"
+    />
+    <style>
+
+        perspective-viewer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+    </style>
+
+
+    <title>PerspectiveJS</title>
+    <script>
+
+    function logstats(e){
+        console.log('clickd')
+        const viewer = document.querySelector("perspective-viewer");
+        const stats = viewer.getRenderStats();
+        console.log(stats.virtual_fps);
+    }
+    </script>
+</head>
+<body>
+    <button onclick="logstats">LogRenderStats</button>
+    <perspective-viewer></perspective-viewer>
+    
+    <script type="module">
+        import perspective from "https://cdn.jsdelivr.net/npm/@finos/perspective/dist/cdn/perspective.js";
+
+// ws
+    const elem = document.querySelector("perspective-viewer");
+
+    console.log(window.location.origin.replace("http", "ws")+"/websocket")
+    const websocket = perspective.websocket(
+        window.location.origin.replace("http", "ws")+"/websocket"
+    );
+
+    // const server_table = await websocket.open_table("underlying_ltp");
+    const server_table = await websocket.open_table("option_quotes");
+    elem.load(server_table);
+
+
+    // const editport = await elem.getEditPort();
+    // const table = await elem.getTable();
+    // const view = await table.view();
+    // view.on_update(obj => {
+    //     if (obj.port_id = editport) {
+    //         console.log("User edit detected");
+    //     }
+    // });
+
+
+
+    // const worker = perspective.worker();
+    // const server_view = await server_table.view();
+    // const client_table = worker.table(server_view);
+    // elem.load(client_table);
+
+        // static data
+        // const viewer = document.querySelector("perspective-viewer");
+        // const table = await perspective.worker().table({ x: [1, 2, 3, 4, 5],
+        // y: [2,3,4,5,6] });
+
+        // // Bind a viewer element to this table.
+        // viewer.load(table);
+        // viewer.resetThemes();
+        // viewer.restore({ theme: "Pro Dark" });
+        // table.update([{ x: 5, y: 9}]);
+
+
+
+
+
+
+
+
+    
+        // const worker = perspective.worker();
+        // const table = worker.table({ x: [1, 2, 3, 4, 5] });
+        // document.querySelector("perspective-viewer").load(table);
+    </script>
+</body>
+</html>

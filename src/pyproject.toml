@@ -1,0 +1,29 @@
+[project]
+name = "territory"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "P1YU5H-50N1",email = "me.piyush.360@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "irage-helper (>=0.1.47,<0.2.0)",
+    "llvmlite (>=0.44.0,<0.45.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+    "tornado (>=6.4.2,<7.0.0)",
+    "zmq (>=0.0.0,<0.0.1)",
+    "py-vollib-vectorized (>=0.1.1,<0.2.0)",
+    "perspective-python (>=3.3.1,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "irage"
+url = "http://172.20.1.199:8000"
+priority = "primary"
+
