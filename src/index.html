@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script
+    <!-- <script
         type="module"
         src="https://cdn.jsdelivr.net/npm/@finos/perspective/dist/cdn/perspective.js"
     ></script>
@@ -18,7 +18,11 @@
     <script
         type="module"
         src="https://cdn.jsdelivr.net/npm/@finos/perspective-viewer-d3fc/dist/cdn/perspective-viewer-d3fc.js"
-    ></script>
+    ></script> -->
+
+    <!-- <script type="module" src="/node_modules/@finos/perspective-viewer-datagrid/dist/cdn/perspective-viewer-datagrid.js"></script>
+    <script type="module" src="/node_modules/@finos/perspective-viewer-d3fc/dist/cdn/perspective-viewer-d3fc.js"></script> -->
+
 
     <link
         rel="stylesheet"
@@ -54,13 +58,18 @@
     <perspective-viewer></perspective-viewer>
     
     <script type="module">
-        import perspective from "https://cdn.jsdelivr.net/npm/@finos/perspective/dist/cdn/perspective.js";
+        // import perspective from "https://cdn.jsdelivr.net/npm/@finos/perspective/dist/cdn/perspective.js";
+        import perspective from "./node_modules/@finos/perspective/dist/cdn/perspective.js";
+        import "./node_modules/@finos/perspective-viewer/dist/cdn/perspective-viewer.js";
+        import "./node_modules/@finos/perspective-viewer-datagrid/dist/cdn/perspective-viewer-datagrid.js";
+        import "./node_modules/@finos/perspective-viewer-d3fc/dist/cdn/perspective-viewer-d3fc.js";
+        
 
 // ws
     const elem = document.querySelector("perspective-viewer");
 
     console.log(window.location.origin.replace("http", "ws")+"/websocket")
-    const websocket = perspective.websocket(
+    const websocket = await perspective.websocket(
         window.location.origin.replace("http", "ws")+"/websocket"
     );
 

@@ -61,12 +61,12 @@ def get_placeholder():
     option_price_iv['maturity'] = option_price_iv['maturity'] + " 23:59:59"
     option_price_iv['maturity'] = pd.to_datetime(option_price_iv['maturity'])
     option_price_iv['strike'] = option_price_iv['strike'] /100
-    option_price_iv['price'] = -1
-    option_price_iv['biv'] = -1
-    option_price_iv['aiv'] = -1
-    option_price_iv['bid'] = -1
-    option_price_iv['ask'] = -1
-    option_price_iv['moneyness'] = -1
+    option_price_iv['price'] = -1.0
+    option_price_iv['biv'] = -1.0
+    option_price_iv['aiv'] = -1.0
+    option_price_iv['bid'] = -1.0
+    option_price_iv['ask'] = -1.0
+    option_price_iv['moneyness'] = -1.0
     option_price_iv.set_index('name',inplace=True)
     return option_price_iv, underlying_prices_df
 

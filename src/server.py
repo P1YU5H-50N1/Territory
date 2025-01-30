@@ -1,5 +1,6 @@
 from perspective import Table, Server,table
 from perspective.handlers.tornado import PerspectiveTornadoHandler
+from tornado.web import StaticFileHandler
 import perspective
 import pandas as pd
 import tornado 
@@ -62,7 +63,6 @@ def start_listening_bcast(option_quotes_tbl, underlying_prices_tbl,option_price_
                     x = option_price_iv.loc[chain_w_bid_ask]
                     x['maturity'] = x['maturity'].astype(str)
                     chain_rec_update = list(x.to_dict('records'))
-                    print(chain_rec_update[0],type(chain_rec_update[0]))
                     option_quotes_tbl.update(chain_rec_update)
 
                 # with pd.option_context('display.max_rows', None, 'display.max_columns', None,'display.max_colwidth',None):  
@@ -134,15 +134,20 @@ option_quotes = client.table(option_price_iv,index='name',name="option_quotes")
 underlying_ltp = client.table(underlying_prices_df,index='name_fut',name="underlying_ltp")
 
 app = tornado.web.Application([
-    (r"/websocket", PerspectiveTornadoHandler, {"perspective_server": MANAGER, "check_origin": True}),
+    (r"/websocket", PerspectiveTornadoHandler, {"perspective_server": MANAGER}),
     (r"/",MainHandler),
-])
+    (
+        r"/node_modules/(.*)",
+        tornado.web.StaticFileHandler,
+        {"path": "./node_modules/"},
+    ),
+    ])
 
 thread = Thread(target=start_listening_bcast,args=[option_quotes,underlying_ltp,option_price_iv,underlying_prices_df])
 thread.start()
 
 
-app.listen(28004)
+app.listen(28004,address="0.0.0.0")
 logging.critical("Listening on http://localhost:33002")
 loop = tornado.ioloop.IOLoop.current()
 loop.start()
