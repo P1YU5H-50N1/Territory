@@ -15,9 +15,9 @@ import perspective
 def start_listening_bcast(option_quotes_tbl, underlying_prices_tbl,option_price_iv, underlying_prices_df):
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
-    socket.connect("tcp://172.20.1.230:12134")
-    socket.setsockopt(zmq.SUBSCRIBE , b"BCAST/MCX/FO")
-    print('started listening_bcast from tcp://172.20.1.230:12134')
+    socket.connect("ZMQ CONN")
+    socket.setsockopt(zmq.SUBSCRIBE , b"ZMQ TOPIC")
+    print('started listening_bcast')
     while True:
         
         
